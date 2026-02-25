@@ -331,7 +331,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## 📞 Contact
 
-**Romani Nasrat Shawqi** - AI Engineer & Django Developer
+**Larbi Mohammed Achraf** - AI Engineer & Django Developer
 
 <p align="center">
   <a href="https://github.com/romanyn36" target="_blank">
