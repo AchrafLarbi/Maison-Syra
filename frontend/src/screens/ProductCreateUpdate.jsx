@@ -1,9 +1,9 @@
 import React from "react";
-import { Container, Row, Col, InputGroup } from "react-bootstrap";
+import { Container, Row, Col, InputGroup, Form, Button, Card } from "react-bootstrap";
 import Product from "../components/Product";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Form, Button } from "react-bootstrap";
+
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -33,6 +33,7 @@ function ProductCreateUpdate() {
     category: "",
     countInStock: 0,
   });
+  const [variants, setVariants] = useState([{ name: "", image: null, preview: null }]);
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const userInfo = useSelector((state) => state.userLogin.userInfo);
@@ -71,6 +72,13 @@ function ProductCreateUpdate() {
           countInStock: productDetailData.countInStock,
         });
         setImagePreview(productDetailData.image);
+        if (productDetailData.variants && productDetailData.variants.length > 0) {
+          setVariants(productDetailData.variants.map(v => ({
+            ...v,
+            preview: v.image ? `${process.env.REACT_APP_MEDIA_URL}${v.image}` : null,
+            existingImage: v.image
+          })));
+        }
       }
     }
     if (success) {
@@ -87,11 +95,37 @@ function ProductCreateUpdate() {
     const file = e.target.files[0];
     setImageFile(file);
 
-    // Create preview URL for the selected image
     if (file) {
       const previewURL = URL.createObjectURL(file);
       setImagePreview(previewURL);
     }
+  };
+
+  const addVariant = () => {
+    setVariants([...variants, { name: "", image: null, preview: null }]);
+  };
+
+  const removeVariant = (index) => {
+    const newVariants = [...variants];
+    newVariants.splice(index, 1);
+    setVariants(newVariants);
+  };
+
+  const handleVariantChange = (index, e) => {
+    const { name, value } = e.target;
+    const newVariants = [...variants];
+    newVariants[index][name] = value;
+    setVariants(newVariants);
+  };
+
+  const handleVariantImageChange = (index, e) => {
+    const file = e.target.files[0];
+    const newVariants = [...variants];
+    newVariants[index].image = file;
+    if (file) {
+      newVariants[index].preview = URL.createObjectURL(file);
+    }
+    setVariants(newVariants);
   };
 
   const submitHandler = (e) => {
@@ -108,6 +142,17 @@ function ProductCreateUpdate() {
     if (imageFile) {
       formData.append("image", imageFile);
     }
+
+    // Append variants
+    formData.append("variantCount", variants.length);
+    variants.forEach((v, index) => {
+      formData.append(`variants[${index}][name]`, v.name);
+      if (v.image) {
+        formData.append(`variants[${index}][image]`, v.image);
+      } else if (v.existingImage) {
+        formData.append(`variants[${index}][image_url]`, v.existingImage);
+      }
+    });
 
     dispatch(createOrUpdateProductAction(formData, id));
   };
@@ -260,7 +305,72 @@ function ProductCreateUpdate() {
                 </Col>
               </Row>
 
+              <hr className="my-4" />
+              <div className="d-flex justify-content-between align-items-center mb-3">
+                <h4>Variantes du Produit</h4>
+                <Button variant="outline-primary" size="sm" onClick={addVariant}>
+                  <i className="fas fa-plus me-1"></i> Ajouter une Variante
+                </Button>
+              </div>
+
+              {variants.map((variant, index) => (
+                <Card key={index} className="mb-3 border-light shadow-sm">
+                  <Card.Body>
+                    <Row align-items-center>
+                      <Col md={4}>
+                        <Form.Group controlId={`variant-name-${index}`}>
+                          <Form.Label>Nom de la Variante</Form.Label>
+                          <Form.Control
+                            type="text"
+                            placeholder="ex: Coco, Vanille..."
+                            name="name"
+                            value={variant.name}
+                            onChange={(e) => handleVariantChange(index, e)}
+                          />
+                        </Form.Group>
+                      </Col>
+                      <Col md={5}>
+                        <Form.Group controlId={`variant-image-${index}`}>
+                          <Form.Label>Image de la Variante</Form.Label>
+                          <div className="d-flex align-items-center">
+                            {variant.preview && (
+                              <img
+                                src={variant.preview}
+                                alt="Preview"
+                                style={{
+                                  width: "50px",
+                                  height: "50px",
+                                  objectFit: "cover",
+                                  borderRadius: "4px",
+                                  marginRight: "10px",
+                                }}
+                              />
+                            )}
+                            <Form.Control
+                              type="file"
+                              size="sm"
+                              onChange={(e) => handleVariantImageChange(index, e)}
+                              accept="image/*"
+                            />
+                          </div>
+                        </Form.Group>
+                      </Col>
+                      <Col md={3} className="text-end d-flex align-items-end justify-content-end">
+                        <Button
+                          variant="outline-danger"
+                          size="sm"
+                          onClick={() => removeVariant(index)}
+                        >
+                          <i className="bi bi-trash-fill"></i>
+                        </Button>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              ))}
+
               <div className="text-center">
+
                 <Button
                   className="mt-3 px-4"
                   type="submit"

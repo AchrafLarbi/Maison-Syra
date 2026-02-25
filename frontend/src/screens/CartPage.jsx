@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Row,
@@ -12,9 +12,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { addToCartAction, removeItemCartAction } from "../actions/CartActions";
 import Message from "../components/Message";
+import DirectCheckoutForm from "../components/DirectCheckoutForm";
+
 function CartPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [showCheckout, setShowCheckout] = useState(false);
+
   // get quantit from the url
   const quantity = window.location.search
     ? Number(window.location.search.split("=")[1])
@@ -33,7 +37,7 @@ function CartPage() {
     dispatch(removeItemCartAction(id)); // remove the item from the cart
   };
   const checkoutHandler = () => {
-    navigate("/login?redirect=shipping");
+    setShowCheckout(true);
   };
 
   return (
@@ -49,11 +53,11 @@ function CartPage() {
         <Link to="/">Retourner</Link>
       )}
       <Row>
-        <Col md={8}>
+        <Col md={showCheckout ? 6 : 8}>
           <ListGroup variant="flush">
             {cartItems.map((item) => (
               <ListGroup.Item key={item.product}>
-                <Row>
+                <Row className="align-items-center">
                   <Col md={2}>
                     <Image
                       src={`${process.env.REACT_APP_MEDIA_URL}${item.image}`}
@@ -66,7 +70,7 @@ function CartPage() {
                     <Link to={`/product/${item.product}`}>{item.name}</Link>
                   </Col>
                   <Col md={2}>{item.price} DZD</Col>
-                  <Col md={2}>
+                  <Col md={3}>
                     <Form.Control
                       as="select"
                       value={item.quantity}
@@ -97,33 +101,49 @@ function CartPage() {
             ))}
           </ListGroup>
         </Col>
-        <Col md={4}>
-          <Card>
-            <ListGroup variant="flush">
-              <ListGroup.Item>
-                <h2>
-                  Sous-total (
-                  {cartItems.reduce((acc, item) => acc + item.quantity, 0)})
-                  articles
-                </h2>
-                {cartItems
-                  .reduce((acc, item) => acc + item.quantity * item.price, 0)
-                  .toFixed(2)}{" "}
-                DZD
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Button
-                  type="button"
-                  className="btn-block"
-                  disabled={cartItems.length === 0}
-                  onClick={checkoutHandler}
-                >
-                  Procéder au Paiement
-                </Button>
-              </ListGroup.Item>
-            </ListGroup>
-          </Card>
-        </Col>
+        
+        {!showCheckout ? (
+          <Col md={4}>
+            <Card>
+              <ListGroup variant="flush">
+                <ListGroup.Item>
+                  <h2 className="fs-4">
+                    Sous-total ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
+                    articles
+                  </h2>
+                  <div className="fs-3 fw-bold text-primary">
+                    {cartItems
+                      .reduce((acc, item) => acc + item.quantity * item.price, 0)
+                      .toFixed(2)}{" "}
+                    DZD
+                  </div>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <div className="d-grid gap-2">
+                    <Button
+                      type="button"
+                      variant="dark"
+                      size="lg"
+                      disabled={cartItems.length === 0}
+                      onClick={checkoutHandler}
+                    >
+                      Procéder au Paiement
+                    </Button>
+                  </div>
+                </ListGroup.Item>
+              </ListGroup>
+            </Card>
+          </Col>
+        ) : (
+          <Col md={6}>
+            <DirectCheckoutForm items={cartItems} />
+            <div className="text-center mt-3">
+              <Button variant="link" onClick={() => setShowCheckout(false)}>
+                Modifier le panier
+              </Button>
+            </div>
+          </Col>
+        )}
       </Row>{" "}
     </div>
   );

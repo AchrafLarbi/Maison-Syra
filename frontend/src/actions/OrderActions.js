@@ -28,13 +28,13 @@ export const createOrderAction = (order) => async (dispatch, getState) => {
       userLogin: { userInfo },
     } = getState();
     const url = process.env.REACT_APP_API_URL + "/api/orders/add/";
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-
-        Authorization: `Bearer ${userInfo.token}`,
-      },
+    const headers = {
+      "Content-Type": "application/json",
     };
+    if (userInfo && userInfo.token) {
+      headers["Authorization"] = `Bearer ${userInfo.token}`;
+    }
+    const config = { headers };
     const { data } = await axios.post(url, order, config);
     dispatch({ type: ORDER_CREATE_SUCCESS, payload: data });
     dispatch({ type: CART_CLEAR_ITEMS });
@@ -66,11 +66,11 @@ export const getOrderDetailsAction = (id) => async (dispatch, getState) => {
     console.log(
       `[REGULAR] User token: ${userInfo?.token ? "Present" : "Missing"}`
     );
-    const config = {
-      headers: {
-        Authorization: `Bearer ${userInfo.token}`,
-      },
-    };
+    const headers = {};
+    if (userInfo && userInfo.token) {
+      headers["Authorization"] = `Bearer ${userInfo.token}`;
+    }
+    const config = { headers };
     const { data } = await axios.get(url, config);
     console.log(`[REGULAR] Order data received:`, data);
     dispatch({ type: ORDER_DETAILS_SUCCESS, payload: data });

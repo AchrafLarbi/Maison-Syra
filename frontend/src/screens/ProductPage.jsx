@@ -10,7 +10,9 @@ import {
   Card,
   Form,
   Badge,
+  Alert,
 } from "react-bootstrap";
+import DirectCheckoutForm from "../components/DirectCheckoutForm";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -30,6 +32,7 @@ function ProductPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const dispatch = useDispatch();
   // get product details form state
   const product_details = useSelector((state) => state.productDetails);
@@ -96,208 +99,149 @@ function ProductPage() {
       ) : error ? (
         <Message variant="danger"> {error}</Message>
       ) : (
-        <div>
-          <Row className="mb-4">
-            <Col md={5}>
-              <div
-                className="product-image-container"
-                style={{
-                  border: "1px solid #e0e0e0",
-                  borderRadius: "8px",
-                  padding: "10px",
-                  boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
-                  transition: "transform 0.3s ease",
-                  overflow: "hidden",
-                }}
-              >
-                <Image
-                  src={`${process.env.REACT_APP_MEDIA_URL}${product.image}`}
-                  alt={product.name}
-                  fluid
-                  className="product-image product-main-image"
-                  style={{
-                    maxHeight: "400px",
-                    objectFit: "contain",
-                    display: "block",
-                    margin: "0 auto",
-                  }}
-                />
-              </div>
+        <div className="product-page-new">
+          {/* Header Section */}
+          <div className="text-center mb-5">
+            <h1 className="fw-bold mb-2">{product.name}</h1>
+            <p className="text-muted mx-auto" style={{ maxWidth: "700px", fontSize: "1.1rem" }}>
+              {product.description}
+            </p>
+            <div className="d-flex justify-content-center align-items-center gap-3 mt-3">
+              <h2 className="fw-bold text-primary mb-0">{product.price} DZD</h2>
+              <Rating value={product.rating} text={`${product.numReviews} avis`} />
+            </div>
+          </div>
+
+          <Row className="g-4">
+            {/* Left Column: Checkout Form */}
+            <Col lg={7} md={12}>
+              <DirectCheckoutForm 
+                product={product}
+                variants={product.variants}
+                quantity={quantity}
+                onVariantChange={setSelectedVariant}
+              />
             </Col>
-            <Col md={4}>
-              <ListGroup variant="flush">
-                <ListGroup.Item className="border-0 px-0">
-                  <h2 style={{ fontWeight: "600" }}>{product.name}</h2>
-                </ListGroup.Item>
-                <ListGroup.Item className="border-0 px-0">
-                  <Rating
-                    value={product.rating}
-                    text={`${product.numReviews} avis`}
-                  />
-                </ListGroup.Item>
-                <ListGroup.Item className="border-0 px-0">
-                  <h4 style={{ color: "#4a4a4a", fontWeight: "500" }}>
-                    <Badge bg="dark" pill className="px-3 py-2">
-                      {product.price}DZD
-                    </Badge>
-                  </h4>
-                </ListGroup.Item>
-                <ListGroup.Item className="border-0 px-0">
-                  <div className="product-description">
-                    <h5>Description :</h5>
-                    <p style={{ lineHeight: "1.6", color: "#6c757d" }}>
-                      {product.description}
-                    </p>
+
+            {/* Right Column: Image and Variants */}
+            <Col lg={5} md={12}>
+               <div className="sticky-top" style={{ top: "100px" }}>
+                  <div
+                    className="product-image-container mb-4"
+                    style={{
+                      border: "1px solid #eee",
+                      borderRadius: "12px",
+                      padding: "15px",
+                      background: "#fff",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.05)",
+                    }}
+                  >
+                    <Image
+                      src={`${process.env.REACT_APP_MEDIA_URL}${selectedVariant ? selectedVariant.image : product.image}`}
+                      alt={selectedVariant ? selectedVariant.name : product.name}
+                      fluid
+                      className="product-image product-main-image mx-auto d-block"
+                      style={{
+                        maxHeight: "450px",
+                        objectFit: "contain",
+                        borderRadius: "8px"
+                      }}
+                    />
                   </div>
-                </ListGroup.Item>
-              </ListGroup>
-            </Col>
-            <Col md={3}>
-              <Card className="shadow-sm">
-                <ListGroup variant="flush">
-                  <ListGroup.Item>
-                    <Row className="align-items-center">
-                      <Col>Prix :</Col>
-                      <Col>
-                        <h4 className="mb-0 fw-bold text-primary">
-                          {product.price}DZD
-                        </h4>
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                  <ListGroup.Item>
-                    <Row className="align-items-center">
-                      <Col>Statut:</Col>
-                      <Col>
-                        {product.countInStock > 0 ? (
-                          <Badge bg="success" pill className="px-3 py-2">
-                            En Stock
-                          </Badge>
-                        ) : (
-                          <Badge bg="danger" pill className="px-3 py-2">
-                            Rupture de Stock
-                          </Badge>
-                        )}
-                      </Col>
-                    </Row>
-                  </ListGroup.Item>
-                  {/* set quantity */}
-                  {product.countInStock > 0 && (
-                    <ListGroup.Item>
-                      <Row className="align-items-center">
-                        <Col>Quantité :</Col>
-                        <Col>
-                          <Form.Select
-                            value={quantity}
-                            onChange={(e) => setQuantity(e.target.value)}
-                            className="form-select-sm"
-                          >
-                            {product.countInStock > 10
-                              ? [...Array(10).keys()].map((x) => (
-                                  <option key={x + 1} value={x + 1}>
-                                    {x + 1}
-                                  </option>
-                                ))
-                              : [...Array(product.countInStock).keys()].map(
-                                  (x) => (
-                                    <option key={x + 1} value={x + 1}>
-                                      {x + 1}
-                                    </option>
-                                  )
-                                )}
-                          </Form.Select>
-                        </Col>
-                      </Row>
-                    </ListGroup.Item>
-                  )}
 
-                  <ListGroup.Item>
-                    <div className="d-grid gap-2">
-                      <Button
-                        variant="primary"
-                        size="md"
-                        className="mb-2 add-to-cart-btn"
-                        type="button"
-                        disabled={product.countInStock === 0}
-                        onClick={addToCartHandler}
-                      >
-                        <i className="bi bi-cart me-2"></i> Ajouter au Panier
-                      </Button>
 
-                      <Button
-                        variant="success"
-                        size="md"
-                        type="button"
-                        disabled={product.countInStock === 0}
-                        onClick={checkoutHandler}
+                  <div className="quantity-selector mb-4">
+                    <h6 className="fw-bold mb-3">Quantité :</h6>
+                    <div className="d-flex align-items-center gap-3">
+                      <Button 
+                        variant="outline-secondary" 
+                        size="sm"
+                        onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                        disabled={quantity <= 1}
                       >
-                        <i className="bi bi-credit-card me-2"></i> Commander Maintenant
+                         <i className="bi bi-dash"></i>
                       </Button>
+                      <span className="fw-bold fs-5 px-2">{quantity}</span>
+                      <Button 
+                        variant="outline-secondary" 
+                        size="sm"
+                        onClick={() => setQuantity(prev => Math.min(product.countInStock, prev + 1))}
+                        disabled={quantity >= product.countInStock}
+                      >
+                         <i className="bi bi-plus"></i>
+                      </Button>
+                      <span className="text-muted small">
+                        ({product.countInStock > 0 ? `${product.countInStock} en stock` : 'Rupture de stock'})
+                      </span>
                     </div>
-                  </ListGroup.Item>
-                </ListGroup>
-              </Card>
+                  </div>
+               </div>
             </Col>
           </Row>
-          {/* reviews row */}
-          <Row className="mt-5">
-            <Col md={6}>
-              <h3 className="border-bottom pb-2">Avis Clients</h3>
+
+          {/* Reviews Section */}
+          <Row className="mt-5 pt-5 border-top">
+            <Col md={8} className="mx-auto">
+              <h3 className="mb-4 text-center fw-bold">Ce que disent nos clients</h3>
               {product.reviews.length === 0 && (
-                <Message>Aucun avis pour le moment</Message>
+                <Message variant="info">Aucun avis pour le moment. Soyez le premier à donner votre avis !</Message>
               )}
               <ListGroup variant="flush">
                 {product.reviews.map((review) => (
                   <ListGroup.Item
                     key={review._id}
-                    className="border-bottom py-3"
+                    className="border-0 bg-light rounded mb-3 p-4"
                   >
-                    <div className="d-flex justify-content-between">
-                      <strong className="mb-1">{review.name}</strong>
-                      <small className="text-muted">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                       <div>
+                          <strong className="fs-5">{review.name}</strong>
+                          <div className="mt-1"><Rating value={review.rating} size="12px" /></div>
+                       </div>
+                       <small className="text-muted bg-white px-2 py-1 rounded shadow-sm">
                         {review.createdAt.substring(0, 10)}
                       </small>
                     </div>
-                    <Rating value={review.rating} />
-                    <p className="mt-2" style={{ fontStyle: "italic" }}>
-                      {review.comment}
+                    <p className="mt-3 mb-0" style={{ fontStyle: "italic", color: "#555" }}>
+                      "{review.comment}"
                     </p>
                   </ListGroup.Item>
                 ))}
-                <ListGroup.Item className="pt-4">
-                  <h4 className="mb-3">Écrire un Avis</h4>
+                
+                <ListGroup.Item className="mt-5 p-4 border rounded shadow-sm">
+                  <h4 className="mb-4">Partagez votre expérience</h4>
                   {errorReview && (
                     <Message variant="danger">{errorReview}</Message>
                   )}
                   {successReview && (
-                    <Message variant="success">Avis soumis avec succès</Message>
+                    <Message variant="success">Merci ! Votre avis a été soumis avec succès.</Message>
                   )}
                   {userInfo ? (
                     userInfo.isAdmin ? (
-                      <Message variant="info">
+                      <Alert variant="warning">
                         Les administrateurs ne peuvent pas écrire d'avis sur les
-                        produits. Seuls les clients peuvent laisser des avis.
-                      </Message>
+                        produits.
+                      </Alert>
                     ) : (
                       <Form className="review-form">
                         <Form.Group controlId="rating" className="mb-3">
-                          <Form.Label>Note</Form.Label>
+                          <Form.Label className="fw-bold">Note <span className="text-danger">*</span></Form.Label>
                           <Form.Select
                             value={rating.rating}
                             onChange={(e) =>
                               setRating({ ...rating, rating: e.target.value })
                             }
+                            className="bg-light"
                           >
-                            <option value="0">Sélectionner...</option>
-                            <option value="1">1 - Mauvais</option>
+                            <option value="0">Sélectionner une note...</option>
+                            <option value="1">1 - Très insuffisant</option>
                             <option value="2">2 - Passable</option>
                             <option value="3">3 - Bien</option>
-                            <option value="4">4 - Très Bien</option>
+                            <option value="4">4 - Très bien</option>
                             <option value="5">5 - Excellent</option>
                           </Form.Select>
                         </Form.Group>
-                        <Form.Group controlId="comment" className="mb-3">
-                          <Form.Label>Votre Avis</Form.Label>
+                        <Form.Group controlId="comment" className="mb-4">
+                          <Form.Label className="fw-bold">Commentaire <span className="text-danger">*</span></Form.Label>
                           <Form.Control
                             as="textarea"
                             rows={4}
@@ -305,25 +249,26 @@ function ProductPage() {
                             onChange={(e) =>
                               setRating({ ...rating, comment: e.target.value })
                             }
-                            placeholder="Partagez vos impressions sur ce produit..."
+                            placeholder="Votre expérience avec ce produit..."
+                            className="bg-light"
                           ></Form.Control>
                         </Form.Group>
                         <Button
                           type="button"
-                          variant="outline-primary"
-                          className="my-3"
+                          variant="dark"
+                          className="px-5 py-2 fw-bold"
                           disabled={rating.rating === 0 || loadingReview}
                           onClick={submitHandler}
                         >
-                          {loadingReview ? "Envoi..." : "Soumettre l'Avis"}
+                          {loadingReview ? "Envoi en cours..." : "Soumettre l'avis"}
                         </Button>
                       </Form>
                     )
                   ) : (
-                    <Message>
-                      Veuillez <Link to="/login">vous connecter</Link> pour
+                    <Alert variant="info" className="text-center py-4">
+                      Veuillez <Link to="/login" className="fw-bold text-decoration-underline">vous connecter</Link> pour
                       écrire un avis
-                    </Message>
+                    </Alert>
                   )}
                 </ListGroup.Item>
               </ListGroup>
