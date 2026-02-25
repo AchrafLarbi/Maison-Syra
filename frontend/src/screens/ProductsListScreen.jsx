@@ -108,9 +108,11 @@ function ProductsListScreen() {
                   className="form-select-sm"
                 >
                   <option value="all">Toutes les Catégories</option>
-                  <option value="electronics">Électronique</option>
-                  <option value="clothing">Vêtements</option>
-                  <option value="books">Livres</option>
+                  <option value="brume intérieur">Brume Intérieur</option>
+                  <option value="savon liquide">Savon Liquide</option>
+                  <option value="diffuseur intérieur">Diffuseur Intérieur</option>
+                  <option value="Pack">Pack</option>
+                  <option value="brume auto">Brume Auto</option>
                 </Form.Select>
               </Col>
             </Row>
@@ -130,7 +132,9 @@ function ProductsListScreen() {
                   </tr>
                 </thead>
                 <tbody>
-                  {products.map((product) => (
+                  {products
+                    .filter((p) => filter === "all" || p.category === filter)
+                    .map((product) => (
                     <tr key={product.id}>
                       <td>
                         <Badge bg="light" text="dark" pill>

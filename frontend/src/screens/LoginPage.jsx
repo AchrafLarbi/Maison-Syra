@@ -39,8 +39,8 @@ function LoginPage() {
         <Card.Body className="p-4">
           <div className="text-center mb-4">
             <img
-              src="/logo.png"
-              alt="Maison SYRA Logo"
+              src="/images/new_logo.jpeg"
+              alt="Logo"
               height="100"
               className="mb-3"
               style={{ borderRadius: "8px" }}

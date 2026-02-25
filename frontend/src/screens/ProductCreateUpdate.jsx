@@ -244,13 +244,18 @@ function ProductCreateUpdate() {
 
                   <Form.Group controlId="category" className="mb-3">
                     <Form.Label>Catégorie</Form.Label>
-                    <Form.Control
-                      type="text"
-                      placeholder="Entrez la catégorie du produit"
-                      value={category ? category : ""}
+                    <Form.Select
                       name="category"
+                      value={category ? category : ""}
                       onChange={handlechange}
-                    ></Form.Control>
+                    >
+                      <option value="">Sélectionner une catégorie</option>
+                      <option value="brume intérieur">Brume Intérieur</option>
+                      <option value="savon liquide">Savon Liquide</option>
+                      <option value="diffuseur intérieur">Diffuseur Intérieur</option>
+                      <option value="Pack">Pack</option>
+                      <option value="brume auto">Brume Auto</option>
+                    </Form.Select>
                   </Form.Group>
                 </Col>
               </Row>

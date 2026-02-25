@@ -36,9 +36,9 @@ function Footer() {
               CONTACT
             </h6>
             <div style={{ color: "#cccccc", lineHeight: "1.8" }}>
-              <p className="mb-2">Boulevard des lions, Oran, Algérie</p>
-              <p className="mb-2">Email: contact@maisonsyra.com</p>
-              <p className="mb-2">Numero de telephone: +213 540 540 540</p>
+              <p className="mb-2">Anis Lotfi, Oran, Algérie</p>
+              <p className="mb-2">Email: contact@vixfragrance.com</p>
+              <p className="mb-2">Numéro : 050645168</p>
             </div>
           </Col>
 
@@ -48,20 +48,12 @@ function Footer() {
             {/* Social Media Icons */}
             <div className="d-flex gap-3 mt-4 justify-content-end">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=61587218295112"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: "#cccccc", fontSize: "1.2rem" }}
               >
                 <i className="fab fa-facebook-f"></i>
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "#cccccc", fontSize: "1.2rem" }}
-              >
-                <i className="fab fa-twitter"></i>
               </a>
               <a
                 href="https://instagram.com"
@@ -70,22 +62,6 @@ function Footer() {
                 style={{ color: "#cccccc", fontSize: "1.2rem" }}
               >
                 <i className="fab fa-instagram"></i>
-              </a>
-              <a
-                href="https://plus.google.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "#cccccc", fontSize: "1.2rem" }}
-              >
-                <i className="fab fa-google-plus-g"></i>
-              </a>
-              <a
-                href="https://youtube.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: "#cccccc", fontSize: "1.2rem" }}
-              >
-                <i className="fab fa-youtube"></i>
               </a>
             </div>
           </Col>
@@ -102,7 +78,7 @@ function Footer() {
                 fontFamily: "Inter, sans-serif",
               }}
             >
-              © 2025 Maison SYRA, tous les droits sont réservés.
+              © 2025 Vix Fragrance, tous les droits sont réservés.
             </p>
           </Col>
         </Row>

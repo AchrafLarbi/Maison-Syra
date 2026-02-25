@@ -17,6 +17,13 @@ import videoUtils from "../utils/videoUtils";
 function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
   // get search keyword from the url
   const searchQuery = window.location ? window.location.search : "";
+  // Extract actual keyword - only consider it a "search" if keyword is non-empty
+  var keyword = "";
+  if (searchQuery) {
+    keyword = searchQuery.split("keyword=")[1]?.split("&")[0] || "";
+  }
+  // Only treat as an active search when there's a real keyword
+  const isSearching = keyword.trim().length > 0;
   // Initialize AOS for scroll animations (only once)
   useEffect(() => {
     AOS.init({
@@ -31,10 +38,19 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
   useEffect(() => {
     AOS.refresh();
   }, [searchQuery]);
-  var keyword = "";
-  if (searchQuery) {
-    keyword = searchQuery.split("keyword=")[1]?.split("&")[0] || "";
-  }
+  // Scroll to products section when page changes (pagination)
+  useEffect(() => {
+    const params = new URLSearchParams(searchQuery);
+    const currentPage = params.get("page");
+    if (currentPage && parseInt(currentPage) > 1) {
+      setTimeout(() => {
+        const productsSection = document.getElementById("products");
+        if (productsSection) {
+          productsSection.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 300);
+    }
+  }, [searchQuery]);
 
   const dispatch = useDispatch();
   const products_List = useSelector((state) => state.productsList);
@@ -392,7 +408,7 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
         }}
       />
       {/* Dior-style Hero Section - Responsive Split */}
-      {!searchQuery && (
+      {!isSearching && (
         <section
           id="video-hero-section"
           ref={heroSectionRef}
@@ -520,7 +536,7 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
                       : {}),
                   }}
                 >
-                  Découvrez l'élégance avec Maison Syra
+                  Découvrez l'élégance avec Vix Fragrance
                 </h2>
                 <button
                   style={{
@@ -566,34 +582,36 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
                   filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))",
                 }}
               >
-                {/* Maison - thin outlined style */}
-                <div
-                  style={{
-                    fontSize: "2.8rem",
-                    fontWeight: 100,
-                    marginBottom: "-0.2rem",
-                    color: "white",
-                    lineHeight: 1,
-                    fontFamily: "'Victorian Orchid', 'Times New Roman', serif",
-                  }}
-                >
-                  Maison
-                </div>
-
-                {/* SYRA - main logo with outlined effect */}
+                {/* VIX - bold prominent style matching logo */}
                 <div
                   style={{
                     fontSize: "6rem",
-                    fontWeight: 100,
-                    letterSpacing: "0.1em",
-                    marginBottom: "-0.1rem",
-                    lineHeight: 0.9,
+                    fontWeight: 800,
+                    marginBottom: "0.1rem",
                     color: "white",
+                    lineHeight: 1,
+                    letterSpacing: "0.05em",
+                    fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
                     textTransform: "uppercase",
-                    fontFamily: "'Victorian Orchid', 'Times New Roman', serif",
                   }}
                 >
-                  SYRA
+                  VIX
+                </div>
+
+                {/* FRAGRANCE - smaller with wide letter spacing matching logo */}
+                <div
+                  style={{
+                    fontSize: "1.8rem",
+                    fontWeight: 400,
+                    letterSpacing: "0.45em",
+                    marginBottom: "-0.1rem",
+                    lineHeight: 1,
+                    color: "white",
+                    textTransform: "uppercase",
+                    fontFamily: "'Inter', 'Helvetica Neue', Arial, sans-serif",
+                  }}
+                >
+                  FRAGRANCE
                 </div>
               </div>
             </div>
@@ -715,7 +733,7 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
                     color: "white",
                   }}
                 >
-                  Faites partie de la Maison Syra
+                  Faites partie de Vix Fragrance
                 </h2>
                 <div
                   style={{
@@ -838,13 +856,13 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
 
       <Container className={landingStyles.sectionsContainer}>
         {/* About Section */}
-        {!searchQuery && (
+        {!isSearching && (
           <section id="about" className={landingStyles.aboutSection}>
             <h2 className={landingStyles.aboutTitle}>
-              À propos de MAISON DE SYRA
+              À propos de VIX FRAGRANCE
             </h2>
             <p className={landingStyles.aboutText}>
-              MAISON DE SYRA est une maison de création dédiée à l'artisanat
+              VIX FRAGRANCE est une maison de création dédiée à l'artisanat
               d'excellence et au design contemporain. Nous croyons en la beauté
               des détails, l'authenticité des matières et la passion du
               fait-main. Découvrez une collection unique, pensée pour sublimer
@@ -854,7 +872,7 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
         )}
 
         {/* Values Section */}
-        {!searchQuery && (
+        {!isSearching && (
           <section className={landingStyles.valuesSection}>
             <div className={landingStyles.valuesGrid}>
               {values.map((val, idx) => (
@@ -869,7 +887,7 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
         )}
 
         {/* Testimonials Section */}
-        {!searchQuery && (
+        {!isSearching && (
           <section className={landingStyles.testimonialsSection}>
             <h2 className={landingStyles.testimonialsTitle}>
               Ils parlent de nous
@@ -909,10 +927,8 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
             <div id="products">
               <div className="my-4">
                 <h2 className={searchQuery ? "mb-4" : "mb-4"}>
-                  {searchQuery
-                    ? `Résultats de Recherche${
-                        keyword ? ` pour "${keyword}"` : ""
-                      }`
+                  {isSearching
+                    ? `Résultats de Recherche pour "${keyword}"`
                     : "Tous les Produits"}
                 </h2>
                 <Row>

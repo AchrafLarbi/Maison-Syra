@@ -53,11 +53,10 @@ function Haeder({ isVideoSection, currentPath }) {
           <LinkContainer to="/">
             <Navbar.Brand className="d-flex align-items-center">
               <img
-                src="/images/syra-logo.png"
-                alt="Maison SYRA Logo"
-                height="70"
+                src="/images/new_logo.jpeg"
+                alt="Vix Fragrance Logo"
+                style={{ width: "100px", height: "auto", borderRadius: "4px" }}
                 className="me-2"
-                style={{ borderRadius: "4px" }}
               />
             </Navbar.Brand>
           </LinkContainer>
