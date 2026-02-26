@@ -26,7 +26,7 @@ function PlaceOrderScreen() {
       // reset Order
       dispatch({ type: ORDER_CREATE_RESET });
     }
-  }, [success]);
+  }, [success, cart.paymentMethod, cart.shippingAddress, dispatch, navigate, order]);
 
   cart.itemsPrice = cart.cartItems
     .reduce((acc, item) => acc + item.price * item.quantity, 0)

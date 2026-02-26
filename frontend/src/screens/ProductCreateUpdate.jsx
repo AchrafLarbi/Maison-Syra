@@ -1,15 +1,12 @@
 import React from "react";
 import { Container, Row, Col, InputGroup, Form, Button, Card } from "react-bootstrap";
-import Product from "../components/Product";
 import { useEffect, useState } from "react";
-import axios from "axios";
 
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getUserDetailAction, updateUserAction } from "../actions/UserActions";
-import { UserUpdateReducers } from "../reducers/UserReducers";
 import {
   PRODUCT_CREATE_OR_UPDATE_RESET,
   PRODUCT_DETAILS_RESET,

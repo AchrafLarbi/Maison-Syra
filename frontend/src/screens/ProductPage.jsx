@@ -7,9 +7,7 @@ import {
   Image,
   ListGroup,
   Button,
-  Card,
   Form,
-  Badge,
   Alert,
 } from "react-bootstrap";
 import DirectCheckoutForm from "../components/DirectCheckoutForm";
@@ -62,26 +60,7 @@ function ProductPage() {
       dispatch({ type: PRODUCT_CREATE_REVIEW_RESET });
     }
   }, [dispatch, id, successReview]);
-  const checkoutHandler = () => {
-    navigate(`/cart/${id}?quantity=${quantity}`);
-  };
-  const addToCartHandler = () => {
-    // Get product image and cart icon elements
-    const productImage = document.querySelector(".product-main-image");
-    const cartIcon =
-      document.querySelector(".cart-icon") ||
-      document.querySelector("[data-cart-icon]") ||
-      document.querySelector(".fa-shopping-cart");
 
-    // Trigger fly-to-cart animation with callback
-    flyToCart(productImage, cartIcon, () => {
-      // Add product to cart after animation completes
-      dispatch(addToCartAction(id, Number(quantity)));
-
-      // Show success indicator
-      showCartSuccessIndicator(cartIcon);
-    });
-  };
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(createReviewAction(id, rating));
