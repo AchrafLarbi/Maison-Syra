@@ -10,10 +10,8 @@ import Message from "../components/Message";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { getUserDetailAction, updateUserAction } from "../actions/UserActions";
 import { UserUpdateReducers } from "../reducers/UserReducers";
-import { USER_UPDATE_RESET } from "../constants/UserConstants";
 import {
   PRODUCT_CREATE_OR_UPDATE_RESET,
-  PRODUCT_DELETE_RESET,
   PRODUCT_DETAILS_RESET,
 } from "../constants/productConstants";
 import {
@@ -86,7 +84,7 @@ function ProductCreateUpdate() {
       dispatch({ type: PRODUCT_DETAILS_RESET });
       navigate("/admin/products");
     }
-  }, [navigate, userInfo, productDetailData, id, success]);
+  }, [navigate, userInfo, productDetailData, id, success, dispatch]);
 
   const handlechange = (e) => {
     setProduct({ ...product, [e.target.name]: e.target.value });
@@ -146,8 +144,11 @@ function ProductCreateUpdate() {
     // Append variants
     formData.append("variantCount", variants.length);
     variants.forEach((v, index) => {
+      if (v.id) {
+        formData.append(`variants[${index}][id]`, v.id);
+      }
       formData.append(`variants[${index}][name]`, v.name);
-      if (v.image) {
+      if (v.image && v.image instanceof File) {
         formData.append(`variants[${index}][image]`, v.image);
       } else if (v.existingImage) {
         formData.append(`variants[${index}][image_url]`, v.existingImage);

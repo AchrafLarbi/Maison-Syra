@@ -50,24 +50,23 @@ def execute_paypal_payment(request):
     else:
         return JsonResponse({'error': 'Payment execution failed'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
 def addOrderItems(request):
-    user= request.user
-    data=request.data
-    orderItems=data['orderItems']
+    user = request.user if request.user.is_authenticated else None
+    data = request.data
+    orderItems = data['orderItems']
     # chek if list or string
-    if isinstance(orderItems,str):
-        orderItems=json.loads(orderItems)
-    
+    if isinstance(orderItems, str):
+        orderItems = json.loads(orderItems)
+
     # shippingAddress contains address,city,postalCode,country,phone as dict
-    shippingAddress = data.get('shippingAddress',{})
-    if isinstance(shippingAddress,str):
-        shippingAddress=json.loads(shippingAddress)
-    if orderItems and len(orderItems)==0:
-        return Response({'detail':'No Order Items'},status=status.HTTP_400_BAD_REQUEST)
+    shippingAddress = data.get('shippingAddress', {})
+    if isinstance(shippingAddress, str):
+        shippingAddress = json.loads(shippingAddress)
+    if orderItems and len(orderItems) == 0:
+        return Response({'detail': 'No Order Items'}, status=status.HTTP_400_BAD_REQUEST)
     else:
         # 1 create order
-        order=Order.objects.create(
+        order = Order.objects.create(
             user=user,
             paymentMethod=data['paymentMethod'],
             taxPrice=data['taxPrice'],
@@ -77,8 +76,9 @@ def addOrderItems(request):
         )
         # 2 create shipping address
 
-        shippingAddress=ShippingAddress.objects.create(
+        shippingAddress = ShippingAddress.objects.create(
             order=order,
+            name=shippingAddress.get('name', ''),
             address=shippingAddress['address'],
             city=shippingAddress['city'],
             postalCode=shippingAddress['postalCode'],
@@ -107,18 +107,17 @@ def addOrderItems(request):
         return Response(serlizer.data)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def getOrderById(request,pk):
-    user=request.user
+def getOrderById(request, pk):
+    user = request.user
     try:
-        order=Order.objects.get(id=pk)
-        if user.is_staff or order.user==user:
-            serlizer=OrderSerializer(order,many=False)
+        order = Order.objects.get(id=pk)
+        if user.is_staff or order.user == (user if user.is_authenticated else None):
+            serlizer = OrderSerializer(order, many=False)
             return Response(serlizer.data)
         else:
-            return Response({'detail':'Not authorized to view this order'},status=status.HTTP_400_BAD_REQUEST)
+            return Response({'detail': 'Not authorized to view this order'}, status=status.HTTP_400_BAD_REQUEST)
     except Order.DoesNotExist:
-        return Response({'detail':'Order does not exist'},status=status.HTTP_400_BAD_REQUEST)
+        return Response({'detail': 'Order does not exist'}, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])

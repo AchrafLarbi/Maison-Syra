@@ -35,7 +35,6 @@ function ProductsListScreen() {
   const { loading, error, products, page, pages } = productsList;
   const productDelete = useSelector((state) => state.productDelete);
   const {
-    loading: loadingDelete,
     error: errorDelete,
     success: successDelete,
   } = productDelete;

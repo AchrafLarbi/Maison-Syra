@@ -96,6 +96,7 @@ class ShippingAddress(models.Model):
     # one to one relationship to make sure that each order has only one shipping address
     # for example, if user has multiple orders, each order has its own shipping address
     order=models.OneToOneField(Order,on_delete=models.CASCADE)
+    name=models.CharField(max_length=200,null=True,blank=True)
     address=models.CharField(max_length=200,null=True,blank=True)
     city=models.CharField(max_length=200,null=True,blank=True)
     postalCode=models.CharField(max_length=200,null=True,blank=True)
@@ -105,3 +106,28 @@ class ShippingAddress(models.Model):
     
     def __str__(self):
         return self.address
+
+class ProductVariant(models.Model):
+    id = models.AutoField(primary_key=True, editable=False)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='variants')
+    name = models.CharField(max_length=200, null=True, blank=True)
+    image = models.ImageField(upload_to=get_directory_path, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.product.name} - {self.name}"
+
+    def delete(self, *args, **kwargs):
+        if self.image:
+            self.image.delete(save=False)
+        super().delete(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                old_variant = ProductVariant.objects.get(pk=self.pk)
+                if old_variant.image != self.image:
+                    old_variant.image.delete(save=False)
+            except ProductVariant.DoesNotExist:
+                pass
+        super().save(*args, **kwargs)
+

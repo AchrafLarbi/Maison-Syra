@@ -1,8 +1,8 @@
 import React from "react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Button } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { saveShippingAddresAction } from "../actions/CartActions";
 import CheckoutSteps from "../components/CheckoutSteps";
 

@@ -1,18 +1,32 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Order,OrderItem,Product,Review,ShippingAddress
+from .models import Order,OrderItem,Product,Review,ShippingAddress,ProductVariant
 from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
 
 
-class ProductSerializer(serializers.ModelSerializer):
-    reviews=serializers.SerializerMethodField(read_only=True)
+class ProductVariantSerializer(serializers.ModelSerializer):
     class Meta:
-        model=Product
-        fields="__all__"
-    def get_reviews(self,obj):
-        reviews=obj.review_set.all()
-        serlizer=ReviewSerializer(reviews,many=True)
+        model = ProductVariant
+        fields = "__all__"
+
+class ProductSerializer(serializers.ModelSerializer):
+    reviews = serializers.SerializerMethodField(read_only=True)
+    variants = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = Product
+        fields = "__all__"
+
+    def get_reviews(self, obj):
+        reviews = obj.review_set.all()
+        serlizer = ReviewSerializer(reviews, many=True)
         return serlizer.data
+
+    def get_variants(self, obj):
+        variants = obj.variants.all()
+        serializer = ProductVariantSerializer(variants, many=True)
+        return serializer.data
+
         
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -44,8 +58,10 @@ class OrderSerializer(serializers.ModelSerializer):
     
     def get_user(self,obj):
         user=obj.user
-        serlizer=UserSerializer(user,many=False)
-        return serlizer.data
+        if user:
+            serlizer=UserSerializer(user,many=False)
+            return serlizer.data
+        return None
     def get_shippingAddress(self,obj):
         try:
             # get the first shipping address related to the order

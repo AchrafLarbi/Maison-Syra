@@ -2,7 +2,6 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { Form, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
@@ -48,7 +47,7 @@ function RegisterPage() {
   };
 
   const validatePassword = () => {
-    if (password == confirmPassword) {
+    if (password === confirmPassword) {
       setMatchPassword(true);
       return true;
     } else {

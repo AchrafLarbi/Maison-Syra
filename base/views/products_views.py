@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse,HttpResponse
-from ..models import Product,Review,Order,OrderItem,ShippingAddress
+from ..models import Product,Review,Order,OrderItem,ShippingAddress,ProductVariant
 # rest_framework
 from rest_framework.decorators import api_view,permission_classes
 from rest_framework.permissions import IsAdminUser,IsAuthenticated
@@ -66,10 +66,10 @@ def createProduct(request):
     """
     create product
     """
-    user=request.user
-      # data=request.data # this if you using content-type:application/json
-    data=request.POST # this if you using content-type:multipart/form-data
-    product=Product(
+    user = request.user
+    data = request.POST
+    
+    product = Product(
         user=user,
         name=data['name'],
         price=data['price'],
@@ -78,39 +78,95 @@ def createProduct(request):
         category=data['category'],
         description=data['description'],
     )
-    if request.FILES:
-        image=request.FILES.get('image')
-        product.image=image
+    if request.FILES.get('image'):
+        product.image = request.FILES.get('image')
     product.save()
-    serialized_product=ProductSerializer(product,many=False)
-    return Response(serialized_product.data,status=status.HTTP_201_CREATED)
+
+    # Handle variants
+    variant_count = int(data.get('variantCount', 0))
+    for i in range(variant_count):
+        v_name = data.get(f'variants[{i}][name]')
+        v_image = request.FILES.get(f'variants[{i}][image]')
+        if v_name or v_image:
+            ProductVariant.objects.create(
+                product=product,
+                name=v_name,
+                image=v_image
+            )
+
+    serialized_product = ProductSerializer(product, many=False)
+    return Response(serialized_product.data, status=status.HTTP_201_CREATED)
 
 
 @api_view(['PUT'])
 @permission_classes([IsAdminUser])
-def updateProduct(request,pk):
+def updateProduct(request, pk):
     """
     update product
     """
-    # data=request.data # this if you using content-type:application/json
-    data=request.POST # this if you using content-type:multipart/form-data
-    product=Product.objects.filter(pk=pk)
+    data = request.POST
+    product = Product.objects.filter(pk=pk)
     if not product.exists():
-        return Response({'detail':'Product does not exist'},status=status.HTTP_400_BAD_REQUEST)
-    product=product.first()
-    product.name=data['name']
-    product.price=data['price']
-    product.brand=data['brand']
-    product.countInStock=data['countInStock']
-    product.category=data['category']
-    image=request.FILES.get('image')
+        return Response({'detail': 'Product does not exist'}, status=status.HTTP_400_BAD_REQUEST)
+    product = product.first()
+    
+    product.name = data['name']
+    product.price = data['price']
+    product.brand = data['brand']
+    product.countInStock = data['countInStock']
+    product.category = data['category']
+    product.description = data['description']
+
+    image = request.FILES.get('image')
     if image:
-        product.image=image
-    product.description=data['description']
+        product.image = image
     
     product.save()
-    serialized_product=ProductSerializer(product,many=False)
-    return Response(serialized_product.data,status=status.HTTP_200_OK)
+
+    # Handle variants (Smart update)
+    variant_count = int(data.get('variantCount', 0))
+    submitted_variant_ids = []
+    
+    for i in range(variant_count):
+        v_id = data.get(f'variants[{i}][id]')
+        v_name = data.get(f'variants[{i}][name]')
+        v_image = request.FILES.get(f'variants[{i}][image]')
+        v_existing_image = data.get(f'variants[{i}][image_url]')
+
+        if v_id:
+            # Update existing variant
+            try:
+                variant = ProductVariant.objects.get(id=v_id, product=product)
+                variant.name = v_name
+                if v_image:
+                    variant.image = v_image
+                # if no new image, but v_existing_image is there, we do nothing to variant.image 
+                # as it already holds the path.
+                variant.save()
+                submitted_variant_ids.append(int(v_id))
+            except ProductVariant.DoesNotExist:
+                # Fallback: if ID provided but not found, create as new
+                variant = ProductVariant.objects.create(
+                    product=product,
+                    name=v_name,
+                    image=v_image
+                )
+                submitted_variant_ids.append(variant.id)
+        else:
+            # Create new variant
+            variant = ProductVariant.objects.create(
+                product=product,
+                name=v_name,
+                image=v_image
+            )
+            submitted_variant_ids.append(variant.id)
+
+    # Delete variants that were not in the submitted list
+    product.variants.exclude(id__in=submitted_variant_ids).delete()
+
+    serialized_product = ProductSerializer(product, many=False)
+    return Response(serialized_product.data, status=status.HTTP_200_OK)
+
 
 @api_view(['DELETE'])
 @permission_classes([IsAdminUser])
