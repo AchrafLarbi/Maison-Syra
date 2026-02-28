@@ -30,7 +30,7 @@ function MyOrders() {
         dispatch(MyOrdersAction());
       }
     }
-  }, [dispatch, navigate, userLogin.userInfo, successOrders]);
+  }, [dispatch, navigate, userLogin.userInfo, successOrders, orders]);
 
   // Helper function to format date
   const formatDate = (dateString) => {

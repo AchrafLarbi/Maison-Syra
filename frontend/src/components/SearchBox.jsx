@@ -1,14 +1,12 @@
 import React, { useState } from 'react'
 import { Button, Form } from 'react-bootstrap'
-import { useSelector } from 'react-redux'
+
 import { useNavigate } from 'react-router-dom'
 
 const SearchBox = () => {
     const navigate = useNavigate()
     const [keyword, setKeyword] = useState('')
-    const userLogin = useSelector(state => state.userLogin)
     const currentpath = window.location.pathname
-    const { userInfo } = userLogin
     
     const onSubmitHandler = (e) => {
         e.preventDefault()

@@ -61,10 +61,8 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
   const { userInfo } = userLogin;
 
   // State for hero product carousel
-  const [currentProductIndex, setCurrentProductIndex] = useState(0);
-  const [focusedSide, setFocusedSide] = useState(null); // 'left', 'right', or null
-
-  const [headerTransparent] = useState(true); // This state is now passed as a prop
+  const [, setCurrentProductIndex] = useState(0);
+  const [, setFocusedSide] = useState(null); // 'left', 'right', or null
 
   useEffect(() => {
     // Function to check if user is in video section
@@ -113,19 +111,6 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
     }
   }, [products]);
 
-  // Function to handle navigation dot clicks
-  const handleProductNavigation = (index) => {
-    setCurrentProductIndex(index);
-  };
-
-  // Function to handle next button click
-  const handleNextProduct = () => {
-    if (products && products.length > 0) {
-      setCurrentProductIndex(
-        (prev) => (prev + 1) % Math.min(4, products.length)
-      );
-    }
-  };
 
   // Sample data for testimonials
   const testimonials = [
@@ -174,8 +159,8 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
     right: false,
   });
   const [videoErrors, setVideoErrors] = useState({ left: false, right: false });
-  const [isLeftVideoPlaying, setIsLeftVideoPlaying] = useState(false);
-  const [isRightVideoPlaying, setIsRightVideoPlaying] = useState(false);
+  const [, setIsLeftVideoPlaying] = useState(false);
+  const [, setIsRightVideoPlaying] = useState(false);
   const [shouldLoadVideos, setShouldLoadVideos] = useState(false);
 
   // Video caching and optimization
@@ -293,8 +278,9 @@ function HomeScreen({ setHeaderTransparent, setIsVideoSection }) {
 
   // Cleanup video cache on unmount
   useEffect(() => {
+    const cache = videoCache.current;
     return () => {
-      videoCache.current.clear();
+      cache.clear();
     };
   }, []);
 

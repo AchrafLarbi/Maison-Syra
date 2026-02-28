@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
   Row,
@@ -19,16 +19,10 @@ import {
   createReviewAction,
   productsDetailsAction,
 } from "../actions/productActions";
-import { addToCartAction } from "../actions/CartActions";
 import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
-import {
-  flyToCart,
-  showCartSuccessIndicator,
-} from "../utils/flyToCartAnimation";
 
 function ProductPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(null);
   const dispatch = useDispatch();

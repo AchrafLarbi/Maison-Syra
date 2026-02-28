@@ -15,7 +15,7 @@ function PaymentPage() {
     if (!shippingAddress) {
       navigate("/shipping");
     }
-  }, []);
+  }, [navigate, shippingAddress]);
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(savePaymentMethodAction(paymentMethod));

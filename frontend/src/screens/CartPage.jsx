@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import {
   Row,
   Col,
@@ -16,7 +16,6 @@ import DirectCheckoutForm from "../components/DirectCheckoutForm";
 
 function CartPage() {
   const { id } = useParams();
-  const navigate = useNavigate();
   const [showCheckout, setShowCheckout] = useState(false);
 
   // get quantit from the url

@@ -1,15 +1,7 @@
-import React, { useState } from "react";
-import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import React from "react";
+import { Container, Row, Col } from "react-bootstrap";
 
 function Footer() {
-  const [email, setEmail] = useState("");
-
-  const handleNewsletterSubmit = (e) => {
-    e.preventDefault();
-    // Handle newsletter subscription
-    console.log("Newsletter subscription:", email);
-    setEmail("");
-  };
 
   return (
     <footer

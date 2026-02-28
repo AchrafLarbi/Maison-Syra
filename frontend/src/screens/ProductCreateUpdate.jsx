@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { getUserDetailAction, updateUserAction } from "../actions/UserActions";
 import {
   PRODUCT_CREATE_OR_UPDATE_RESET,
   PRODUCT_DETAILS_RESET,

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/FormContainer";
-import { Button, Form, Row, Col, Card } from "react-bootstrap";
+import { Button, Form, Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { userLoginAction } from "../actions/UserActions";
 import Message from "../components/Message";
@@ -27,7 +27,7 @@ function LoginPage() {
         navigate("/");
       }
     }
-  }, [userInfo]);
+  }, [userInfo, navigate, redirect]);
   const submitHandler = (e) => {
     e.preventDefault();
 

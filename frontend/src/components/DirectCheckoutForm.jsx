@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Row, Col, Card, Alert } from "react-bootstrap";
+import { Form, Button, Row, Col, Card } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { createOrderAction } from "../actions/OrderActions";
@@ -12,7 +12,7 @@ const DirectCheckoutForm = ({ items, product, variants, onVariantChange, quantit
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [name, setName] = useState("");
+  const [name, setName] = useState(""); 
   const [phone, setPhone] = useState("");
   const [wilaya, setWilaya] = useState("");
   const [daira, setDaira] = useState("");
@@ -35,6 +35,7 @@ const DirectCheckoutForm = ({ items, product, variants, onVariantChange, quantit
     if (selectedVariant && onVariantChange) {
       onVariantChange(selectedVariant);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleVariantSelect = (v) => {

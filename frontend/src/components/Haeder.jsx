@@ -7,7 +7,7 @@ import { userLogoutAction } from "../actions/UserActions";
 function Haeder({ isVideoSection, currentPath }) {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
-  const { loading, error, userInfo } = userLogin;
+  const {  userInfo } = userLogin;
 
   // Check if we're on login or register pages
   const isAuthPage = currentPath === "/login" || currentPath === "/register";
