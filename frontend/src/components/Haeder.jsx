@@ -7,7 +7,7 @@ import { userLogoutAction } from "../actions/UserActions";
 function Haeder({ isVideoSection, currentPath }) {
   const dispatch = useDispatch();
   const userLogin = useSelector((state) => state.userLogin);
-  const {  userInfo } = userLogin;
+  const { userInfo } = userLogin;
 
   // Check if we're on login or register pages
   const isAuthPage = currentPath === "/login" || currentPath === "/register";
@@ -53,9 +53,9 @@ function Haeder({ isVideoSection, currentPath }) {
           <LinkContainer to="/">
             <Navbar.Brand className="d-flex align-items-center">
               <img
-                src="/images/VIX_logo.png"
+                src="/images/vix_logo.svg"
                 alt="VIX Fragrance Logo"
-                style={{ width: "100px", height: "auto", borderRadius: "4px" }}
+                style={{ width: "120px", height: "auto" }}
                 className="me-2"
               />
             </Navbar.Brand>
