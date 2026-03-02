@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Container, Row, Col, Card, Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { adminGetAllOrdersAction } from "../actions/AdminActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
@@ -8,6 +9,7 @@ import { formatCurrency } from "../utils/currency";
 
 function AdminDashboard() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -16,17 +18,15 @@ function AdminDashboard() {
   const { orders, loading, error } = orderAll;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
+    if (!userInfo || !userInfo.isAdmin) {
+      navigate("/");
+    } else {
       dispatch(adminGetAllOrdersAction());
     }
-  }, [dispatch, userInfo]);
+  }, [dispatch, userInfo, navigate]);
 
   if (!userInfo || !userInfo.isAdmin) {
-    return (
-      <Container>
-        <Message variant="danger">Accès Refusé. Admin Seulement.</Message>
-      </Container>
-    );
+    return null;
   }
 
   return (
