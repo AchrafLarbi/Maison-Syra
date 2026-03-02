@@ -2,7 +2,6 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 function Footer() {
-
   return (
     <footer
       style={{
@@ -13,7 +12,10 @@ function Footer() {
       }}
     >
       <Container>
-        <Row className="py-5 gx-5 justify-content-between align-items-start" style={{ rowGap: '2rem', columnGap: '3rem' }}>
+        <Row
+          className="py-5 gx-5 justify-content-between align-items-start"
+          style={{ rowGap: "2rem", columnGap: "3rem" }}
+        >
           {/* CONTACT Section */}
           <Col lg={3} md={6} className="mb-4 text-start">
             <h6
@@ -28,19 +30,18 @@ function Footer() {
               CONTACT
             </h6>
             <div style={{ color: "#cccccc", lineHeight: "1.8" }}>
-              <p className="mb-2">Anis Lotfi, Oran, Algérie</p>
+              <p className="mb-2">Akid lotfi , Oran, Algérie</p>
               <p className="mb-2">Email: contact@vixfragrance.com</p>
-              <p className="mb-2">Numéro : 050645168</p>
+              <p className="mb-2">Numéro : +213 560 64 51 68</p>
             </div>
           </Col>
 
           {/* NEWSLETTER Section */}
           <Col lg={3} md={6} className="mb-4 text-end ms-auto">
-            
             {/* Social Media Icons */}
             <div className="d-flex gap-3 mt-4 justify-content-end">
               <a
-                href="https://www.facebook.com/profile.php?id=61587218295112"
+                href="https://web.facebook.com/profile.php?id=61587218295112"
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: "#cccccc", fontSize: "1.2rem" }}
@@ -48,7 +49,7 @@ function Footer() {
                 <i className="fab fa-facebook-f"></i>
               </a>
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/vix_fragrance?igsh=MXFwM2xjdmIxMHVjNQ=="
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ color: "#cccccc", fontSize: "1.2rem" }}
