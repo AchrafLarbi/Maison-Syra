@@ -46,8 +46,10 @@ function OrdersListScreen() {
   const filteredOrders = orders
     ? orders.filter(
         (order) =>
-          order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          order.id.toString().includes(searchTerm)
+          (order.user?.name ?? "")
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          order.id.toString().includes(searchTerm),
       )
     : [];
 
@@ -56,7 +58,7 @@ function OrdersListScreen() {
   const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
   const currentOrders = filteredOrders.slice(
     indexOfFirstOrder,
-    indexOfLastOrder
+    indexOfLastOrder,
   );
 
   // Calculate total pages for pagination
@@ -72,7 +74,7 @@ function OrdersListScreen() {
         onClick={() => setCurrentPage(number)}
       >
         {number}
-      </Pagination.Item>
+      </Pagination.Item>,
     );
   }
 
@@ -156,7 +158,7 @@ function OrdersListScreen() {
                       currentOrders.map((order) => (
                         <tr key={order.id}>
                           <td>#{order.id}</td>
-                          <td>{order.user.name}</td>
+                          <td>{order.user?.name ?? "—"}</td>
                           <td>
                             {new Date(order.createdAt).toLocaleDateString()}
                           </td>
@@ -176,7 +178,7 @@ function OrdersListScreen() {
                               <Badge bg="success">
                                 Livré le{" "}
                                 {new Date(
-                                  order.deliveredAt
+                                  order.deliveredAt,
                                 ).toLocaleDateString()}
                               </Badge>
                             ) : (
