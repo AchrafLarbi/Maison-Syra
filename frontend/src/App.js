@@ -44,8 +44,8 @@ function AppContent() {
       <Haeder transparent={isHomePage ? headerTransparent : false} />
       <main
         style={{
-          marginTop: isHomePage ? "0" : "80px",
-          paddingTop: isHomePage ? "0" : "20px",
+          marginTop: isHomePage ? "0" : "60px",
+          paddingTop: isHomePage ? "0" : "24px",
         }}
       >
         <Routes>

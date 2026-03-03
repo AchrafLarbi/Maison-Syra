@@ -38,7 +38,7 @@ function Haeder({ isVideoSection, currentPath }) {
     >
       <Navbar
         expand="xl"
-        className="py-1"
+        className="py-0"
         style={{
           background: "rgba(0,0,0,0)",
           color: "var(--syra-gold)",
@@ -55,14 +55,14 @@ function Haeder({ isVideoSection, currentPath }) {
               <img
                 src="/images/vix_logo.svg"
                 alt="VIX Fragrance Logo"
-                style={{ width: "120px", height: "auto" }}
-                className="me-2"
+                style={{ width: "80px", height: "auto" }}
+                className="me-2 header-logo"
               />
             </Navbar.Brand>
           </LinkContainer>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto my-1 my-lg-0" style={{ maxHeight: "60px" }}>
+            <Nav className="me-auto my-0 my-lg-0">
               <LinkContainer to={userInfo && userInfo.isAdmin ? "/admin" : "/"}>
                 <Nav.Link
                   href={userInfo && userInfo.isAdmin ? "/admin" : "/"}
@@ -208,6 +208,25 @@ function Haeder({ isVideoSection, currentPath }) {
         /* Navbar background transition when not in video section */
         header:not(.video-section) {
           background: rgba(0, 0, 0, 0.9) !important;
+        }
+        /* Mobile: keep header compact */
+        @media (max-width: 575px) {
+          .header-logo {
+            width: 60px !important;
+          }
+          .navbar-toggler {
+            padding: 2px 6px !important;
+            font-size: 0.85rem !important;
+          }
+          .nav-link {
+            font-size: 0.85rem !important;
+            padding-top: 4px !important;
+            padding-bottom: 4px !important;
+          }
+          .btn {
+            font-size: 0.8rem !important;
+            padding: 4px 10px !important;
+          }
         }
       `}</style>
     </header>
