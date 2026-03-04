@@ -158,10 +158,14 @@ function OrderScreen() {
                 </h2>
                 <p>
                   <strong>Name: </strong>
-                  {order.user.name}
+                  {order.user ? order.user.name : "Guest"}
                   <br />
                   <strong>Email: </strong>
-                  <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+                  {order.user ? (
+                    <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
+                  ) : (
+                    "N/A"
+                  )}
                 </p>
                 <p>
                   <strong>Shipping: </strong>
