@@ -16,6 +16,7 @@ import {
 } from "../actions/AdminActions";
 import {
   ORDER_DELIVER_RESET,
+  ORDER_DETAILS_RESET,
   ORDER_PAY_RESET,
 } from "../constants/OrderConstants";
 
@@ -41,26 +42,22 @@ function OrderScreen() {
   const { success: successDeliver, loading: loadingDeliver } = orderDeliver;
   useEffect(() => {
     console.log(`[OrderScreen] useEffect triggered - ID: ${id}`);
-    console.log(`[OrderScreen] Current order:`, order);
     console.log(`[OrderScreen] User info:`, userInfo);
     console.log(`[OrderScreen] Is Admin:`, userInfo?.isAdmin);
 
-    if (!order || order.id !== Number(id) || successPay || successDeliver) {
-      dispatch({ type: ORDER_PAY_RESET });
-      dispatch({ type: ORDER_DELIVER_RESET });
+    // Always reset and fetch fresh data when id changes
+    dispatch({ type: ORDER_PAY_RESET });
+    dispatch({ type: ORDER_DELIVER_RESET });
+    dispatch({ type: ORDER_DETAILS_RESET });
 
-      // Use admin routes if user is admin, otherwise use regular routes
-      if (userInfo && userInfo.isAdmin) {
-        console.log(`[OrderScreen] Using ADMIN route for order ${id}`);
-        dispatch(adminGetOrderDetailsAction(id));
-      } else {
-        console.log(`[OrderScreen] Using REGULAR route for order ${id}`);
-        dispatch(getOrderDetailsAction(id));
-      }
+    if (userInfo && userInfo.isAdmin) {
+      console.log(`[OrderScreen] Using ADMIN route for order ${id}`);
+      dispatch(adminGetOrderDetailsAction(id));
     } else {
-      console.log(`[OrderScreen] Order already loaded, skipping fetch`);
+      console.log(`[OrderScreen] Using REGULAR route for order ${id}`);
+      dispatch(getOrderDetailsAction(id));
     }
-  }, [id, order, successDeliver, successPay, dispatch, userInfo]);
+  }, [id, successDeliver, successPay, dispatch, userInfo]);
 
   // Debug loading state changes
   useEffect(() => {
