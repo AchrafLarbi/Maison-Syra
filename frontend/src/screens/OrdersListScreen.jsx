@@ -37,7 +37,8 @@ function OrdersListScreen() {
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
       navigate("/login?redirect=admin/users");
-    } else {
+    } else if (successDelete || !orders || orders.length === 0) {
+      // Only fetch if not loaded yet or after a delete
       dispatch(allOrdersAction());
     }
   }, [dispatch, navigate, userInfo, successDelete]);

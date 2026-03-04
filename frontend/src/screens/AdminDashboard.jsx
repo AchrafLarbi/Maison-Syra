@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Container, Row, Col, Card, Button, Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { adminGetAllOrdersAction } from "../actions/AdminActions";
+import { allOrdersAction } from "../actions/OrderActions";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import { formatCurrency } from "../utils/currency";
@@ -14,14 +14,16 @@ function AdminDashboard() {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const orderAll = useSelector((state) => state.orderAll);
-  const { orders, loading, error } = orderAll;
+  // Fix: use the correct Redux key 'allOrders' (not 'orderAll')
+  const allOrdersState = useSelector((state) => state.allOrders);
+  const { orders, loading, error } = allOrdersState;
 
   useEffect(() => {
     if (!userInfo || !userInfo.isAdmin) {
       navigate("/");
-    } else {
-      dispatch(adminGetAllOrdersAction());
+    } else if (!orders || orders.length === 0) {
+      // Only fetch if not cached yet
+      dispatch(allOrdersAction());
     }
   }, [dispatch, userInfo, navigate]);
 
