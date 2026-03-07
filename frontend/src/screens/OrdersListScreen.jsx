@@ -43,11 +43,22 @@ function OrdersListScreen() {
     }
   }, [dispatch, navigate, userInfo, successDelete]);
 
+  // Helper to get client name from order (shipping address first, then user)
+  const getClientName = (order) =>
+    order.shippingAddress?.name || order.user?.name || "N/A";
+
+  // Helper to get client phone from order
+  const getClientPhone = (order) =>
+    order.shippingAddress?.phone || "N/A";
+
   // Filter orders based on search term
   const filteredOrders = orders
     ? orders.filter(
         (order) =>
-          (order.user?.name ?? "")
+          getClientName(order)
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          (getClientPhone(order))
             .toLowerCase()
             .includes(searchTerm.toLowerCase()) ||
           order.id.toString().includes(searchTerm),
@@ -147,6 +158,7 @@ function OrdersListScreen() {
                     <tr>
                       <th>ID</th>
                       <th>CLIENT</th>
+                      <th>TÉLÉPHONE</th>
                       <th>DATE</th>
                       <th>TOTAL</th>
                       <th>STATUT PAIEMENT</th>
@@ -159,7 +171,8 @@ function OrdersListScreen() {
                       currentOrders.map((order) => (
                         <tr key={order.id}>
                           <td>#{order.id}</td>
-                          <td>{order.user?.name ?? "—"}</td>
+                          <td>{getClientName(order)}</td>
+                          <td>{getClientPhone(order)}</td>
                           <td>
                             {new Date(order.createdAt).toLocaleDateString()}
                           </td>

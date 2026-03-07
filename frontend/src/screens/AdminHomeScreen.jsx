@@ -198,6 +198,7 @@ function AdminHomeScreen() {
                       <tr>
                         <th>ID Commande</th>
                         <th>Client</th>
+                        <th>Téléphone</th>
                         <th>Date</th>
                         <th>Total</th>
                         <th>Paiement</th>
@@ -217,7 +218,8 @@ function AdminHomeScreen() {
                                 #{order.id}
                               </Link>
                             </td>
-                            <td>{order.user?.name || "N/A"}</td>
+                            <td>{order.shippingAddress?.name || order.user?.name || "N/A"}</td>
+                            <td>{order.shippingAddress?.phone || "N/A"}</td>
                             <td>
                               {new Date(order.createdAt).toLocaleDateString()}
                             </td>

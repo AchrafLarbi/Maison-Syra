@@ -154,30 +154,17 @@ function OrderScreen() {
                   Shipping
                 </h2>
                 <p>
-                  <strong>Name: </strong>
-                  {order.user ? order.user.name : "Guest"}
+                  <strong>Nom: </strong>
+                  {order.shippingAddress?.name || order.user?.name || "N/A"}
                   <br />
-                  <strong>Email: </strong>
-                  {order.user ? (
-                    <a href={`mailto:${order.user.email}`}>{order.user.email}</a>
-                  ) : (
-                    "N/A"
-                  )}
+                  <strong>Téléphone: </strong>
+                  {order.shippingAddress?.phone || "N/A"}
                 </p>
                 <p>
-                  <strong>Shipping: </strong>
+                  <strong>Adresse: </strong>
                   {order && order.shippingAddress
                     ? `${order.shippingAddress.address}, ${order.shippingAddress.city}, ${order.shippingAddress.postalCode}, ${order.shippingAddress.country}`
                     : "Loading..."}
-                  <br />
-                  {order &&
-                    order.shippingAddress &&
-                    order.shippingAddress.phone && (
-                      <>
-                        <strong>Phone: </strong>
-                        {order.shippingAddress.phone}
-                      </>
-                    )}
                 </p>
                 {order.isDelivered ? (
                   <div>
